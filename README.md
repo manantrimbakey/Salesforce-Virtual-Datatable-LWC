@@ -42,7 +42,7 @@ See usage for `virtualTable` and `virtualTableCell` LWC components in the LWC `v
 
 ### Public Methods
 
-- `getSelectedRows` - Returns currently selected rows (if `allowRowSelection` is true), otherwise returns an empty array. If `allowRowSelection` is true, then component will give you a `String` which has value `allRows` if all rows are selected (this is for performance reasons, to avoid sending large data outside of this component), otherwise it will return an `Object` of selected rows keys.
+- `getSelectedRowsKeys` - Returns currently selected rows keys (if `allowRowSelection` is true), otherwise returns an empty array. If allRows are selected, then it will return a `String` with value `allRows`, otherwise it will return a `Set` of selected rows keys.
 
 ## Limitations
 
