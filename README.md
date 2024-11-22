@@ -43,6 +43,7 @@ See usage for `virtualTable` and `virtualTableCell` LWC components in the LWC `v
 ### Public Methods
 
 - `getSelectedRowsKeys` - Returns currently selected rows keys (if `allowRowSelection` is true), otherwise returns an empty array. If allRows are selected, then it will return a `String` with value `allRows`, otherwise it will return a `Set` of selected rows keys.
+**Note:** This method will not give keys when you select all rows checkbox, because it will have a performance impact to send all keys outside of this component.
 
 ## Limitations
 
