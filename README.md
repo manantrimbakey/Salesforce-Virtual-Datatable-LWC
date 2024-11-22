@@ -7,7 +7,7 @@ A high-performance Lightning Web Component (LWC) datatable that efficiently hand
 - 🚀 Virtual scrolling for efficient rendering of large datasets
 - ✨ Support for 500,000+ rows with smooth scrolling
 - ✅ Row selection (single/multiple) capability
-- 🎯 Support for various data types including:
+- 🎯 Supports various data types including:
   - Text
   - Number
   - Currency
@@ -26,27 +26,27 @@ A high-performance Lightning Web Component (LWC) datatable that efficiently hand
 
 Deploy the following components to your Salesforce org:
 
-- virtualTableCell LWC
-- virtualTable LWC
+- `virtualTableCell` LWC
+- `virtualTable` LWC
 
 ## Usage
 
-See usage for `virtualTable` and `virtualTableCell` LWC components in the LWC `virtualTableTest`.
+Refer to the `virtualTableTest` LWC component for implementation examples of both `virtualTable` and `virtualTableCell`.
 
 ### Public Properties
 
-- `allowRowSelection` - Type : `Boolean` - Controls whether rows can be selected
-- `key` - Type : `String` - Unique identifier field for each row
-- `columns` - Type : `Array` - Table column definitions in the format of what `lightning-datatable` expects. (See `virtualTableTest` for reference)
-- `rowData` - Type : `Array` - Data to be displayed in the table
+- `allowRowSelection` - Type: `Boolean` - Controls whether rows can be selected
+- `key` - Type: `String` - Unique identifier field for each row
+- `columns` - Type: `Array` - Table column definitions following the `lightning-datatable` format (See `virtualTableTest` for reference)
+- `rowData` - Type: `Array` - Data to be displayed in the table
 
 ### Public Methods
 
-- `getSelectedRowsKeys` - Returns currently selected rows keys (if `allowRowSelection` is true), otherwise returns an empty array. If allRows are selected, then it will return a `String` with value `allRows`, otherwise it will return a `Set` of selected rows keys.
-**Note:** This method will not give keys when you select all rows checkbox, because it will have a performance impact to send all keys outside of this component.
+- `getSelectedRowsKeys` - Returns currently selected row keys (if `allowRowSelection` is true), otherwise returns an empty array. Returns a `String` value of `'allRows'` when all rows are selected, or a `Set` of selected row keys.
+**Note:** This method will not return keys when the "select all rows" checkbox is used, as this would impact performance.
 
 ## Limitations
 
-- The component behaviour for accessibility is not yet implemented. (PRs are welcome)
-- The component does not support the `lightning-datatable` API. (PRs are welcome)
-- The component total row count visibility is dependent on the client's resolution and web browser. For now client/user needs to manually zoom in/out to see the total rows. (WIP and PRs are welcome)
+- Accessibility features are not yet implemented (PRs welcome)
+- The component does not support the `lightning-datatable` API (PRs welcome)
+- Total row count visibility depends on the client's resolution and web browser. Users may need to manually zoom in/out to view the total row count (Work in Progress - PRs welcome)
