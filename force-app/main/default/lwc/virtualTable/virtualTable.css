@@ -1,0 +1,42 @@
+.outer-container {
+    height: calc(100% - 5px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+.header-table {
+    width: 100%;
+    background: white;
+    z-index: 2;
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+.table-container {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+th,
+td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    width: 33.33%;
+    content-visibility: auto;
+    contain: content;
+    contain-intrinsic-size: 0 40px;
+}
