@@ -35,15 +35,16 @@ Refer to the `virtualTableTest` LWC component for implementation examples of bot
 
 ### Public Properties
 
+- `label` - Type: `String` - Label for the table
 - `allowRowSelection` - Type: `Boolean` - Controls whether rows can be selected
-- `key` - Type: `String` - Unique identifier field for each row
+- `keyField` - Type: `String` - Unique identifier field for each row
 - `columns` - Type: `Array` - Table column definitions following the `lightning-datatable` format (See `virtualTableTest` for reference)
 - `rowData` - Type: `Array` - Data to be displayed in the table
 
 ### Public Methods
 
-- `getSelectedRowsKeys` - Returns currently selected row keys (if `allowRowSelection` is true), otherwise returns an empty array. Returns a `String` value of `'allRows'` when all rows are selected, or a `Set` of selected row keys.
-**Note:** This method will not return keys when the "select all rows" checkbox is used, as this would impact performance.
+- `getSelectedRowsKeys` - Retrieves the keys of currently selected rows if `allowRowSelection` is enabled; otherwise, it returns an empty array. If all rows are selected, it returns a `String` value of `'allRows'`, or a `Set` containing the keys of the selected rows.
+**Note:** This method does not return keys when the "select all rows" checkbox is checked, to maintain optimal performance.
 
 ## Limitations
 
