@@ -13,12 +13,16 @@ export default class VirtualTable extends LightningElement {
         rowHeight: 40,
         nodePadding: 10,
         viewportHeight: 400,
-        _selectedRowsKey: new Set()
+        _selectedRowsKey: new Set(),
+        rafIdIntersectionObserver: null,
+        scrollTimeout : 0
     };
+
+    @api label = 'Datatable';
 
     @api allowRowSelection = false;
 
-    @api key;
+    @api keyField;
 
     @api get columns() {
         return this._unreactiveProp._columns || [];
@@ -84,7 +88,10 @@ export default class VirtualTable extends LightningElement {
     }
 
     get totalContentHeight() {
-        return this._unreactiveProp.allData.length * this._unreactiveProp.rowHeight;
+        return Math.max(
+            this._unreactiveProp.allData.length * this._unreactiveProp.rowHeight,
+            this._unreactiveProp.viewportHeight || 0
+        );
     }
 
     get scrollTop() {
@@ -124,12 +131,12 @@ export default class VirtualTable extends LightningElement {
     }
 
     handleScroll(event) {
-        if (this.scrollTimeout) {
-            window.cancelAnimationFrame(this.scrollTimeout);
+        if (this._unreactiveProp.scrollTimeout) {
+            window.cancelAnimationFrame(this._unreactiveProp.scrollTimeout);
         }
         let scrollTop = event?.target?.scrollTop;
 
-        this.scrollTimeout = window.requestAnimationFrame(() => {
+        this._unreactiveProp.scrollTimeout = window.requestAnimationFrame(() => {
             if (
                 this.scrollTop === scrollTop ||
                 Math.abs((this._unreactiveProp._scrollTop || 0) - scrollTop) < 9 * this._unreactiveProp.rowHeight
@@ -142,38 +149,30 @@ export default class VirtualTable extends LightningElement {
     }
 
     disconnectedCallback() {
-        if (this.scrollTimeout) {
-            window.cancelAnimationFrame(this.scrollTimeout);
+        if (this._unreactiveProp.scrollTimeout) {
+            window.cancelAnimationFrame(this._unreactiveProp.scrollTimeout);
         }
     }
 
     updateVisibleData() {
         const endNode = Math.min(this.startNode + this.visibleNodesCount, this._unreactiveProp.allData.length);
         this.visibleData = this._unreactiveProp.allData.slice(this.startNode, endNode).map((row, index) => {
-            let key = row[this.key] || row.id || index;
+            let key = row[this.keyField] || row.id || index;
             let modifiedRow = this._unreactiveProp._modifiedDataCache[key];
             if (modifiedRow) {
                 if (this.allowRowSelection) {
-                    if (this._unreactiveProp._allRowsSelected && !modifiedRow.isSelected) {
-                        modifiedRow.isSelected = true;
-                        this._unreactiveProp._selectedRowsKey.add(key);
-                        this._unreactiveProp._selectedRows[key] = modifiedRow;
-                    } else if (
-                        !this._unreactiveProp._allRowsSelected &&
-                        !modifiedRow.isSelected &&
-                        this.selectedRowsKeys.has(key)
-                    ) {
-                        modifiedRow.isSelected = true;
-                        this._unreactiveProp._selectedRowsKey.add(key);
-                        this._unreactiveProp._selectedRows[key] = modifiedRow;
-                    } else if (
-                        !this._unreactiveProp._allRowsSelected &&
-                        modifiedRow.isSelected &&
-                        !this.selectedRowsKeys.has(key)
-                    ) {
-                        modifiedRow.isSelected = false;
-                        this._unreactiveProp._selectedRowsKey.delete(key);
-                        delete this._unreactiveProp._selectedRows[key];
+                    const shouldBeSelected = this._unreactiveProp._allRowsSelected || this.selectedRowsKeys.has(key);
+
+                    if (modifiedRow.isSelected !== shouldBeSelected) {
+                        modifiedRow.isSelected = shouldBeSelected;
+
+                        if (shouldBeSelected) {
+                            this._unreactiveProp._selectedRowsKey.add(key);
+                            this._unreactiveProp._selectedRows[key] = modifiedRow;
+                        } else {
+                            this._unreactiveProp._selectedRowsKey.delete(key);
+                            delete this._unreactiveProp._selectedRows[key];
+                        }
                     }
                 }
                 return modifiedRow;
@@ -182,14 +181,11 @@ export default class VirtualTable extends LightningElement {
             modifiedRow = { ...row };
 
             if (this.allowRowSelection) {
-                if (!this._unreactiveProp._allRowsSelected) {
-                    modifiedRow.isSelected = this._unreactiveProp._selectedRowsKey.has(key);
-                    if (modifiedRow.isSelected) {
-                        this._unreactiveProp._selectedRowsKey.add(key);
-                        this._unreactiveProp._selectedRows[key] = modifiedRow;
-                    }
-                } else if (this._unreactiveProp._allRowsSelected && !modifiedRow.isSelected) {
-                    modifiedRow.isSelected = true;
+                const shouldBeSelected =
+                    this._unreactiveProp._allRowsSelected || this._unreactiveProp._selectedRowsKey.has(key);
+                modifiedRow.isSelected = shouldBeSelected;
+
+                if (shouldBeSelected) {
                     this._unreactiveProp._selectedRowsKey.add(key);
                     this._unreactiveProp._selectedRows[key] = modifiedRow;
                 }
@@ -214,7 +210,7 @@ export default class VirtualTable extends LightningElement {
                     ...column,
                     value: modifiedRow[column.fieldName],
                     typeAttributes: typeAttributes,
-                    key: `${key}-${column.fieldName}` // Unique key for each cell
+                    key: `${key}-${column.fieldName}`
                 };
             });
             modifiedRow.processed = true;
@@ -229,10 +225,25 @@ export default class VirtualTable extends LightningElement {
         if (!this.hasInitialized) {
             const container = this.template.querySelector('.table-container');
             if (container) {
-                this.viewportHeight = container.clientHeight;
+                this._unreactiveProp.viewportHeight = container.getBoundingClientRect().height;
                 this.hasInitialized = true;
                 this.updateVisibleData();
             }
+
+            let resizeObserver = new ResizeObserver((entries) => {
+                let defaultHeaderCell = this.template.querySelectorAll('th');
+                let customHeaderCell = this.template.querySelectorAll('.custom-header-cell');
+
+                for (let index = 0; index < defaultHeaderCell.length; index++) {
+                    const element = customHeaderCell[index];
+                    if (element) {
+                        element.style.width = `${defaultHeaderCell[index].getBoundingClientRect().width}px`;
+                    }
+                }
+            });
+
+            let table = this.template.querySelector('table');
+            resizeObserver.observe(table);
         }
     }
 
