@@ -22,6 +22,10 @@ A high-performance Lightning Web Component (LWC) datatable that efficiently hand
 - 📱 Responsive design
 - ⚡ Optimized performance through row virtualization
 
+## Preview
+
+![Virtual Table](./assets/intro.gif)
+
 ## Installation
 
 Deploy the following components to your Salesforce org:
