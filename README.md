@@ -24,7 +24,7 @@ A high-performance Lightning Web Component (LWC) datatable that efficiently hand
 
 ## Preview
 
-![Virtual Table](./assets/intro.gif)
+Navigate to the `.assets` folder to see the preview of the component.
 
 ## Installation
 
