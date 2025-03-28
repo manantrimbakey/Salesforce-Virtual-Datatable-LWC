@@ -1,62 +1,64 @@
 <template>
-    <div class="outer-container slds-theme_default">
+    <div class="outer-container slds-theme_default virtual-datatable">
         <div class="custom-header full-width">
             <div
-                class="custom-header-cell slds-p-around_x-small"
+                class="custom-header-cell slds-is-relative"
                 data-columnkey="selectAll"
                 data-columnlabel="Select All"
                 lwc:if={allowRowSelection}
             >
-                <lightning-input
-                    type="checkbox"
-                    checked={allRowsSelected}
-                    onclick={handleAllRowSelection}
-                ></lightning-input>
+                <div class="slds-p-around_x-small slds-grid slds-grid_vertical-align-center">
+                    <div>
+                        <lightning-input
+                            type="checkbox"
+                            checked={allRowsSelected}
+                            onchange={handleAllRowSelection}
+                        ></lightning-input>
+                    </div>
+                </div>
+
+                <div
+                    class="slds-is-absolute full-height slds-theme_success custom-header-resize-handle"
+                    onmousedown={handleResizeStart}
+                ></div>
             </div>
             <template for:each={processedColumns} for:item="column">
                 <div
-                    class="custom-header-cell slds-p-around_x-small"
+                    class="custom-header-cell slds-is-relative"
                     data-columnkey={column.key}
                     data-columnlabel={column.label}
                     key={column.key}
                 >
-                    {column.label}
+                    <div class="slds-p-around_x-small slds-grid slds-grid_vertical-align-center">
+                        <div>{column.label}</div>
+                    </div>
+
+                    <div
+                        class="slds-is-absolute full-height slds-theme_success custom-header-resize-handle"
+                        onmousedown={handleResizeStart}
+                    ></div>
                 </div>
             </template>
         </div>
-        <div
-            class="table-container"
-            onscroll={handleScroll}
-            role="region"
-            aria-label="Scrollable Table"
-            tabindex="0"
-        >
+        <div class="table-container" onscroll={handleScroll} role="region" aria-label="Scrollable Table" tabindex="0">
             <div style={contentStyle}>
                 <div style={offsetStyle} class="">
                     <table class="slds-table" role="table" aria-label={label}>
                         <thead>
                             <tr>
                                 <template lwc:if={allowRowSelection}>
-                                    <th scope="col">
+                                    <th scope="col" data-columnkey="selectAll" data-columnlabel="Select All">
                                         <div class="" title="Select All"></div>
                                     </th>
                                 </template>
-                                <template
-                                    for:each={processedColumns}
-                                    for:item="column"
-                                >
+                                <template for:each={processedColumns} for:item="column">
                                     <th
                                         key={column.key}
                                         scope="col"
                                         data-columnkey={column.key}
                                         data-columnlabel={column.label}
                                     >
-                                        <div
-                                            class="slds-truncate"
-                                            title={column.label}
-                                        >
-                                            {column.label}
-                                        </div>
+                                        <div class="slds-truncate" title={column.label}>{column.label}</div>
                                     </th>
                                 </template>
                             </tr>
@@ -71,7 +73,7 @@
                                     class="slds-hint-parent"
                                 >
                                     <template lwc:if={allowRowSelection}>
-                                        <td>
+                                        <td data-column="selectAll">
                                             <div>
                                                 <lightning-input
                                                     type="checkbox"
@@ -82,14 +84,12 @@
                                             </div>
                                         </td>
                                     </template>
-                                    <template
-                                        for:each={row.flattenedColumns}
-                                        for:item="column"
-                                    >
+                                    <template for:each={row.flattenedColumns} for:item="column">
                                         <td
                                             key={column.key}
                                             scope="row"
                                             class={column.cellClass}
+                                            data-column={column.fieldName}
                                         >
                                             <c-virtual-table-cell
                                                 type={column.type}

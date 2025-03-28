@@ -1,7 +1,15 @@
 <template>
-    <div style="height: 75vh" class="slds-theme_default slds-is-relative">
+    <div class="slds-theme_default slds-is-relative">
         <template lwc:if={isLoading}>
-            <lightning-spinner alternative-text="Loading" size="xx-small" variant="base"></lightning-spinner>
+            <div style="height: 100%" class="slds-align_absolute-center slds-is-relative slds-p-around_medium">
+                <div style="flex-grow: 1" class="slds-is-relative slds-p-around_xx-large">
+                    <lightning-progress-bar
+                        value={loadingProgress}
+                        size="medium"
+                        variant="circular"
+                    ></lightning-progress-bar>
+                </div>
+            </div>
         </template>
         <template lwc:else>
             <lightning-layout multiple-rows>
@@ -13,34 +21,29 @@
                     ></lightning-button>
                 </lightning-layout-item>
                 <lightning-layout-item size="12">
-                    <!-- <template lwc:if={rowData.length}> -->
-                        <div style="height: 60vh">
-                            <!-- NOTE : With Row Selections -->
-                            <c-virtual-table
-                                key-field="id"
-                                allow-row-selection
-                                columns={columns}
-                                row-data={rowData}
-                                selected-rows-keys={selectedRowsKey}
-                                row-height="50"
-                                lwc:ref="virtualTableRef"
-                            ></c-virtual-table>
+                    <div style="height: 60vh">
+                        <!-- NOTE : With Row Selections -->
+                        <c-virtual-table
+                            key-field="id"
+                            allow-row-selection
+                            columns={columns}
+                            row-data={rowData}
+                            selected-rows-keys={selectedRowsKey}
+                            row-height="50"
+                            lwc:ref="virtualTableRef"
+                        ></c-virtual-table>
 
-                            <!-- NOTE: Without Row Selections -->
-                            <!-- <c-virtual-table
-                                key-field="id"
-                                columns={columns}
-                                row-data={rowData}
-                                selected-rows-keys={selectedRowsKey}
-                                row-height="50"
-                                lwc:ref="virtualTableRef"
-                                label="Virtual Table"
-                            ></c-virtual-table> -->
-                        </div>
-                    <!-- </template> -->
-                    <!-- <template lwc:else>
-                        <div>No data found</div>
-                    </template> -->
+                        <!-- NOTE: Without Row Selections -->
+                        <!-- <c-virtual-table
+                            key-field="id"
+                            columns={columns}
+                            row-data={rowData}
+                            selected-rows-keys={selectedRowsKey}
+                            row-height="50"
+                            lwc:ref="virtualTableRef"
+                            label="Virtual Table"
+                        ></c-virtual-table> -->
+                    </div>
                 </lightning-layout-item>
             </lightning-layout>
         </template>

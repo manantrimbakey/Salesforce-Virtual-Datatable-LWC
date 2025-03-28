@@ -2,7 +2,7 @@
     height: calc(100% - 5px);
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow-y: auto;
     transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
 }
@@ -29,7 +29,7 @@
 }
 
 table {
-    width: 100%;
+    width: calc(100% - 2px);
     border-collapse: collapse;
     table-layout: fixed;
 }
@@ -39,6 +39,7 @@ td {
     content-visibility: auto;
     contain: content;
     contain-intrinsic-size: 0 40px;
+    box-sizing: border-box;
 }
 
 .show-row {
@@ -63,6 +64,7 @@ th {
     background-color: transparent !important;
     color: transparent !important;
     opacity: 0 !important;
+    box-sizing: border-box;
 }
 
 th > div {
@@ -78,7 +80,44 @@ th > div {
     width: 100%;
 }
 
+.full-height {
+    height: 100%;
+}
+
 .custom-header {
     height: max-content;
     background-color: var(--slds-g-color-neutral-base-90);
+    box-shadow: 0px -5px 6px 6px rgb(0 0 0 / 20%);
+    position: relative;
+    z-index: 1;
+}
+
+.virtual-table-select-all-checkbox {
+    width: 16px;
+    height: 16px;
+}
+
+.virtual-datatable .custom-header-resize-handle {
+    position: absolute;
+    width: 2px;
+    right: 0;
+    top: 0;
+    height: 100%;
+    cursor: col-resize;
+    background-color: var(--slds-g-color-neutral-base-70, #aeaeae);
+}
+
+.virtual-datatable .custom-header-resize-handle:hover {
+    background-color: var(--slds-g-color-brand-base-50, #0176d3);
+}
+
+.virtual-datatable .custom-header-resize-handle::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    top: 0;
+    right: -4px;
+    cursor: col-resize;
+    background-color: none;
 }
